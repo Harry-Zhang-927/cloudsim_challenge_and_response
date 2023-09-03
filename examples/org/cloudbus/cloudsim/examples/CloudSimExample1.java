@@ -15,20 +15,7 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterBroker;
-import org.cloudbus.cloudsim.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelFull;
-import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.*;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -69,10 +56,10 @@ public class CloudSimExample1 {
 			// Second step: Create Datacenters
 			// Datacenters are the resource providers in CloudSim. We need at
 			// list one of them to run a CloudSim simulation
-			Datacenter datacenter0 = createDatacenter("Datacenter_0");
+			CustomedDatacenter datacenter0 = createDatacenter("Datacenter_0");
 
 			// Third step: Create Broker
-			DatacenterBroker broker = createBroker();
+			CustomDatacenterBroker broker = createBroker();
 			int brokerId = broker.getId();
 
 			// Fourth step: Create one virtual machine
@@ -119,6 +106,10 @@ public class CloudSimExample1 {
 			// Sixth step: Starts the simulation
 			CloudSim.startSimulation();
 
+			broker.addChallengeListener(datacenter0);
+			broker.sendChallengeToDatacenter("Initial Challenge");
+
+
 			CloudSim.stopSimulation();
 
 			//Final step: Print results when simulation is over
@@ -139,7 +130,7 @@ public class CloudSimExample1 {
 	 *
 	 * @return the datacenter
 	 */
-	private static Datacenter createDatacenter(String name) {
+	private static CustomedDatacenter createDatacenter(String name) {
 
 		// Here are the steps needed to create a PowerDatacenter:
 		// 1. We need to create a list to store
@@ -194,9 +185,9 @@ public class CloudSimExample1 {
 				costPerStorage, costPerBw);
 
 		// 6. Finally, we need to create a PowerDatacenter object.
-		Datacenter datacenter = null;
+		CustomedDatacenter datacenter = null;
 		try {
-			datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+			datacenter = new CustomedDatacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -212,10 +203,10 @@ public class CloudSimExample1 {
 	 *
 	 * @return the datacenter broker
 	 */
-	private static DatacenterBroker createBroker() {
-		DatacenterBroker broker = null;
+	private static CustomDatacenterBroker createBroker() {
+		CustomDatacenterBroker broker = null;
 		try {
-			broker = new DatacenterBroker("Broker");
+			broker = new CustomDatacenterBroker("Broker");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
